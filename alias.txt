@@ -1,0 +1,2 @@
+set-alias c clear
+set-alias "cd \~" "cd c:\users\josh\"
