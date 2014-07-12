@@ -1,4 +1,13 @@
 function make-creds($username, $password){
-   $secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
-   return New-Object System.Management.Automation.PSCredential ($username, $secpasswd) 
+    $secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
+    return New-Object System.Management.Automation.PSCredential ($username, $secpasswd) 
+}
+
+function unzipfunction($file, $destination){
+    $shell = new-object -com shell.application
+    $zip = $shell.NameSpace($file)
+    foreach($item in $zip.items())
+    {
+        $shell.Namespace($destination).copyhere($item)
+    }
 }
