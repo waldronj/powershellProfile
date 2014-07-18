@@ -3,7 +3,7 @@ function make-creds($username, $password){
     return New-Object System.Management.Automation.PSCredential ($username, $secpasswd) 
 }
 
-function unzipfunction($file, $destination){
+function unzip($file, $destination){
     $shell = new-object -com shell.application
     $zip = $shell.NameSpace($file)
     foreach($item in $zip.items())
