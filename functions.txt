@@ -1,9 +1,9 @@
-function make-creds($username, $password){
+function Make-Creds($username, $password){
     $secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
     return New-Object System.Management.Automation.PSCredential ($username, $secpasswd) 
 }
 
-function unzip($file, $destination){
+function Unzip($file, $destination){
     $shell = new-object -com shell.application
     $zip = $shell.NameSpace($file)
     foreach($item in $zip.items())
@@ -12,7 +12,13 @@ function unzip($file, $destination){
     }
 }
 
-function show-object{
+function Log-Write{
+param ([string]$logstring)
+add-content C:\logfile.log -value ($(get-date -f s) + ":   " + $logstring)
+}
+
+
+function Show-Object{
 #############################################################################
 ##
 ## Show-Object
