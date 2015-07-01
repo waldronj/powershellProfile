@@ -1,3 +1,4 @@
 $user = [environment]::username
 set-alias c clear
 set-alias "cd \~" "cd c:\users\$user\"
+set-alias ls dir
