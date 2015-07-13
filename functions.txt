@@ -330,3 +330,111 @@ $form.Controls.Add($treeView)
 $null = $form.ShowDialog()
 $form.Dispose()
 }
+
+function Accept-TrustedHosts{
+    cmd /C "winrm set winrm/config/client @{TrustedHosts=`"*`"}"
+}
+
+function Deny-TrustedHosts{
+    cmd /C "winrm set winrm/config/client @{TrustedHosts=`"`"}"
+}
+
+function Get-PowershellHero{
+    invoke-webrequest "https://pbs.twimg.com/media/B7rEBmgCcAAui-L.png"
+}
+
+function Edit-Hosts{
+    vim c:\windows\system32\drivers\etc\hosts
+}
+
+function disable-wireless {
+    (Get-WmiObject -Class Win32_NetworkAdapter -filter "DeviceID = 11").disable()
+}
+
+function enable-wireless {
+    (Get-WmiObject -Class Win32_NetworkAdapter -filter "DeviceID = 11").enable()
+}
+
+function Unzip($file, $destination){
+    $shell = new-object -com shell.application
+    $zip = $shell.NameSpace($file)
+    foreach($item in $zip.items())
+    {
+        $shell.Namespace($destination).copyhere($item)
+    }
+}
+
+function Log-Write{
+    param ([string]$logstring)
+    add-content C:\logfile.log -value ($(get-date -f s) + ":   " + $logstring)
+}
+
+function Size($w, $h)
+{
+    New-Object System.Management.Automation.Host.Size($w, $h)
+}
+
+function resize()
+{
+Write-Host '[Arrows] resize  [Esc] exit ...'
+$ErrorActionPreference = 'SilentlyContinue'
+for($ui = $Host.UI.RawUI;;) {
+    $b = $ui.BufferSize
+    $w = $ui.WindowSize
+    switch($ui.ReadKey(6).VirtualKeyCode) {
+        37 {
+            $w = Size ($w.width - 1) $w.height
+            $ui.WindowSize = $w
+            $ui.BufferSize = Size $w.width $b.height
+            break
+        }
+        39 {
+            $w = Size ($w.width + 1) $w.height
+            $ui.BufferSize = Size $w.width $b.height
+            $ui.WindowSize = $w
+            break
+        }
+        38 {
+            $ui.WindowSize = Size $w.width ($w.height - 1)
+            break
+        }
+        40 {
+            $w = Size $w.width ($w.height + 1)
+            if ($w.height -gt $b.height) {
+                $ui.BufferSize = Size $b.width $w.height
+            }
+            $ui.WindowSize = $w
+            break
+        }
+        27 {
+            return
+        }
+    }
+  }
+}
+
+Function get-MemoryUsage
+{
+    $input|Foreach-Object{
+    gwmi -Class win32_operatingsystem -computername $_ |
+    Select-Object @{Name = "MemoryUsage"; Expression = { “{0:N2}” -f ((($_.TotalVisibleMemorySize - $_.FreePhysicalMemory)*100)/ $_.TotalVisibleMemorySize) }}
+    }
+}
+
+Function Get-CPUusageAverage
+{
+    $input|Foreach-Object{Get-WmiObject -computername $_ win32_processor | Measure-Object -property LoadPercentage -Average | Select Average}
+}
+
+Function Clear-Job{
+    get-job | stop-job
+    get-job | remove-job
+}
+
+Function Get-DotNetVersion{
+    Get-ChildItem 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP' -recurse |
+    Get-ItemProperty -name Version -EA 0 |
+    Where { $_.PSChildName -match '^(?!S)\p{L}'} |
+    Select PSChildName, Version
+}
+

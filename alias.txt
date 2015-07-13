@@ -1,3 +1,5 @@
 $user = [environment]::username
+$env:path += ";C:\users\jwaldron\scripts"
 set-alias c clear
-set-alias "cd \~" "cd c:\users\$user\"
+set-alias res resize
+set-alias "cd \~" "cd c:\users\jwaldron"
